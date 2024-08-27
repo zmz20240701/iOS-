@@ -93,3 +93,29 @@ let formattedString2: String = "$1234.56"
 let decimalValue2: Decimal? = try? Decimal(formattedString2, format: .currency(code: "USD"))
 
 print("decimalValue2: \(decimalValue2)") // Optional(1234.56)
+
+
+
+
+
+/*
+Decimal.FormatStyle 是 swift 中用来格式化和解析 Decimal 类型数值的一个结构体。它提供了一些属性和方法，可以用来设置数值的格式化样式，比如小数位数、分组分隔符、小数点符号等等。Decimal.FormatStyle 是一个值类型，所以它的实例是不可变的，一旦创建就不能修改。
+
+Decimal.FormatStyle 提供了两种嵌套类型，
+1.  Decimal.FormatStyle.Percent 
+2.  Decimal.FormatStyle.Currency
+
+Decimal.FormatStyle.Percent 是用来格式化百分比数值的，它提供了一个属性 percentSymbol，用来设置百分比符号，默认是 %。Decimal.FormatStyle.Currency 是用来格式化货币数值的，它提供了一个属性 currencyCode，用来设置货币代码，默认是 USD。
+
+*/
+import Foundation
+
+let exampleNumber: Decimal = 1234.5678
+
+let customFormatting = exampleNumber.formatted(
+    .number.precision(.fractionLength(2))
+    .grouping(.never)
+    .sign(strategy: .always())
+)
+
+print(customFormatting) // 1234.57
