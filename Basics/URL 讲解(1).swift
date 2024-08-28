@@ -16,3 +16,28 @@ print(type(of: urlString)) //String
 
 let url = URL(string: urlString)
 print(url!)
+
+
+//URLResourceKey 是一个结构体,它包含了一组静态常量,这些常量用于表示 URL 资源的各种属性,通过这些属性键,可以获取和设置文件或目录的各种元数据.
+
+import Foundation
+
+// 创建 URL 组件
+let webURL: URL? = URL(string: "URL: https://www.example.com/search?query=swift&page=1")
+
+// 获取 URL 的各个部分
+print("Scheme: \(webURL?.scheme ?? "nil")")
+print("Host: \(webURL?.host ?? "nil")")
+print("Path: \(webURL?.path ?? "nil")")
+print("Query: \(webURL?.query ?? "nil")")
+print("Fragment: \(webURL?.fragment ?? "nil")")
+print("Port: \(webURL?.port ?? 0)")
+
+//如何获取 queryItems
+let urlComponents = URLComponents(string: "https://www.example.com/search?query=swift&page=1")
+let queryItems = urlComponents?.queryItems
+print("queryItems: \(queryItems ?? [])")
+for queryItem in queryItems ?? [] {
+    print("name: \(queryItem.name), value: \(queryItem.value ?? "")")
+}
+
