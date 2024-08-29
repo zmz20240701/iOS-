@@ -85,3 +85,153 @@ struct TextStyleAttributes : AttributeScope {
     let underlineColor : UnderlineStyleAttribute // UnderlineStyleAttribute.Value == UnderlineStyle
      
 }
+
+
+
+
+
+
+
+
+
+import Foundation
+import SwiftUI
+
+
+if let attString = try? AttributedString(
+    markdown: "See the *latest* new at [Apple](https://www.apple.com)."),
+
+
+
+    // 通过 range(of:) 方法找到了子字符串“Apple”在 attString 中的范围。然后，我们使用该范围来访问子字符串的链接属性。
+    let websiteRange = attString.range(of: "Apple"),
+
+
+
+
+    // 获取“Apple” 这个子字符串的链接属性，如果该子字符串包含一个链接，则 link 属性返回该链接。
+    let link = attString[websiteRange].link 
+    {
+    print(link)
+}
+
+
+
+
+
+
+
+
+import Foundation
+import SwiftUI
+
+// 定义一个属性键
+enum OutlineColorAttribute : AttributedStringKey {
+    typealias Value = Color
+    static let name = "OutlineColor"
+}
+
+
+// 将自定义键映射到自定义的空间里
+struct MyTextAttributes: AttributeScope {
+    let outlineColor: OutlineColorAttribute
+    // 如果你还定义了其他键，请往下写...
+}
+
+
+// 将自定义空间扩展给 AttributeScopes 协议
+extension AttributeScopes {
+    var myTextAttributes: MyTextAttributes.Type {
+        MyTextAttributes.self
+    }
+}
+
+
+// 现在有一段 markdown 文本
+let markdownText = "**Hello, World!** This is *Markdown* text."
+
+
+//将 markdown 格式的文本转换为富文本格式
+do {
+    let attributedString: AttributedString = try AttributedString(
+        markdown: markdownText,
+        including: \.myTextAttributes,
+        options: .init(), //AttributedString.MarkdownParsingOptions
+        baseURL: nil //这是一个可选的 URL 参数，用于指定解析 Markdown 链接时的基础 URL。如果你在 Markdown 文本中使用了相对链接，这个 baseURL 会作为参考基准。
+    )
+    print(attributedString)
+} catch {
+    print("Error creating AttributedString: \(error)")
+}
+
+
+/**
+ \.用于创建对属性或方法的键路径。键路径是一种引用对象属性的方式，它允许你通过路径，访问嵌套属性或方法。
+ */
+
+struct Person {
+    var name: String
+}
+
+let person = Person(name: "Alice")
+//let name = person.name
+let namePath = \Person.name
+let name = person[keyPath: namePath]
+print(name)
+
+/// **AttributedString.MarkdownParsingOptions**:
+/// 1.  allowsExtendedAttributes
+/// 2.  appliesSourcePositionAttributes
+
+
+
+import Foundation
+import SwiftUI
+
+
+// 自定义属性的类型
+enum OutlineColorAttribute: AttributedStringKey {
+    typealias Value = Color
+    static let name = "OutlineColor"
+}
+
+
+//创建自定义属性的作用域
+struct MyTextStyleAttributes: AttributeScope {
+    let outlineColor: OutlineColorAttribute
+}
+
+
+// 扩展 AttributeScopes 以包含自定义属性的作用域
+extension AttributeScopes {
+    var myTextStyleAttributes: MyTextStyleAttributes.Type {
+        MyTextStyleAttributes.self
+    }
+}
+
+
+let nsAttributedString = NSMutableAttributedString(string: "hello, world")
+
+//为这个文本添加颜色
+nsAttributedString.addAttribute(
+    NSAttributedString.Key("OutlineColor"),
+    value: Color.red,
+    range: NSRange(location: 0, length: 5)
+)
+nsAttributedString.addAttribute(
+    NSAttributedString.Key("OutlineColor"),
+    value: Color.yellow,
+    range: NSRange(location: 7, length: 5)
+)
+
+
+do {
+    let attributedString = try AttributedString(nsAttributedString, including: \.myTextStyleAttributes)
+    
+    for run in attributedString.runs {
+        let subString = attributedString[run.range]
+        print("片段：\(subString)\n属性：\(run.attributes)")
+    }
+} catch {
+    print(error)
+}
